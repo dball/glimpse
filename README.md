@@ -2,6 +2,11 @@
 
 Glimpse is a Clojure-inspired LISP interpreter written in Golang.
 
+## Usage
+
+1. `make`
+2. `./glimpse`
+
 ## Philosophy
 
 It was written using the MAL methodology, but does not intend MAL compatibility.
