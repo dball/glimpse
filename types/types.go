@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"hash"
-	"log"
 
 	"github.com/benbjohnson/immutable"
 	"github.com/spaolacci/murmur3"
@@ -465,7 +464,7 @@ func (c ConsCell) WithMetadata(m Map) HasMetadata {
 	return ConsCell{Head: c.Head, Tail: c.Tail, Meta: m}
 }
 
-// Concatenation must not contain empty seqs
+// Concatenation is not empty
 type Concatenation struct {
 	Seqs []Seq
 	Meta Map
@@ -478,19 +477,25 @@ func (c Concatenation) Seq() Seq {
 
 // Next of a concatention finds the first nonempty value
 func (c Concatenation) Next() (bool, MalType, Seq) {
-	log.Print("next")
-	for len(c.Seqs) > 0 {
-		empty, head, tail := c.Seqs[0].Next()
-		if !empty {
-			log.Printf("concat head %v", head)
-			c.Seqs[0] = tail
-			return false, head, c
+	_, head, tail := c.Seqs[0].Next()
+	tailEmpty, _, _ := tail.Next()
+	if tailEmpty {
+		if len(c.Seqs) == 1 {
+			return false, head, Nil{}
 		}
-		log.Printf("skipping empty")
-		c.Seqs = c.Seqs[1:]
+		if len(c.Seqs) == 2 {
+			return false, head, c.Seqs[1]
+		}
+		return false, head, Concatenation{Seqs: c.Seqs[1:]}
 	}
-	log.Print("empty")
-	return true, nil, nil
+	seqs := make([]Seq, len(c.Seqs))
+	seqs[0] = tail
+	for i, seq := range c.Seqs {
+		if i > 0 {
+			seqs[i] = seq
+		}
+	}
+	return false, head, Concatenation{Seqs: seqs}
 }
 
 // Sequential are concatenations

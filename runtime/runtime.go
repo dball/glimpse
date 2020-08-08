@@ -2,7 +2,6 @@ package runtime
 
 import (
 	"errors"
-	"log"
 
 	"github.com/dball/glimpse/ex"
 	"github.com/dball/glimpse/types"
@@ -73,18 +72,22 @@ func TakeDrop(n types.MalType, value types.MalType) (types.SliceSeq, types.Seq, 
 }
 
 // Concat returns a seqable of the non-empty seqs
-func Concat(values ...types.MalType) (types.Seqable, error) {
-	log.Printf("concating %v", len(values))
-	if len(values) == 0 {
-		return types.NewList(), nil
-	}
-	seqs := make([]types.Seq, len(values))
-	for i, value := range values {
+func Concat(values ...types.MalType) (types.MalType, error) {
+	var seqs []types.Seq
+	for _, value := range values {
 		seq, err := Seq(value)
 		if err != nil {
 			return nil, err
 		}
-		seqs[i] = seq
+		empty, _, _ := seq.Next()
+		if !empty {
+			seqs = append(seqs, seq)
+		}
+	}
+	if len(seqs) == 0 {
+		return types.NewList(), nil
+	} else if len(seqs) == 1 {
+		return seqs[0], nil
 	}
 	return types.Concatenation{Seqs: seqs}, nil
 }
