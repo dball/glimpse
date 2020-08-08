@@ -4,7 +4,10 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
+	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/benbjohnson/immutable"
 	"github.com/dball/glimpse/core"
@@ -12,6 +15,7 @@ import (
 	"github.com/dball/glimpse/reader"
 	"github.com/dball/glimpse/runtime"
 	"github.com/dball/glimpse/types"
+	"github.com/peterh/liner"
 )
 
 func evalAst(evalEnv *types.Env, form types.MalType) (types.MalType, error) {
@@ -403,6 +407,34 @@ func rep(env *types.Env, s string) string {
 	return PRINT(val)
 }
 
+func interactiveRepl2(env *types.Env) {
+	line := liner.NewLiner()
+	defer line.Close()
+	line.SetCtrlCAborts(true)
+	historyFile := filepath.Join(os.TempDir(), ".glimpse-history")
+	if f, err := os.Open(historyFile); err == nil {
+		line.ReadHistory(f)
+		f.Close()
+	}
+	for {
+		text, err := line.Prompt("user> ")
+		if err == nil {
+			line.AppendHistory(text)
+			os.Stdout.WriteString(rep(env, text))
+			os.Stdout.WriteString("\n")
+		} else if err == liner.ErrPromptAborted {
+		} else if err == io.EOF {
+			break
+		} else {
+			log.Fatalf("liner err %v", err)
+		}
+		if f, err := os.Create(historyFile); err == nil {
+			line.WriteHistory(f)
+			f.Close()
+		}
+	}
+}
+
 func main() {
 	env := core.BuildEnv()
 	env.Set("*host-language*", types.String("glimpse"))
@@ -440,15 +472,7 @@ func main() {
 	}
 	if len(args) == 0 {
 		env.Set("*ARGV*", types.List{})
-		scanner := bufio.NewScanner(os.Stdin)
-		for {
-			os.Stdout.WriteString("user> ")
-			if !scanner.Scan() {
-				break
-			}
-			os.Stdout.WriteString(rep(env, scanner.Text()))
-			os.Stdout.WriteString("\n")
-		}
+		interactiveRepl2(env)
 	} else {
 		env.Set("*ARGV*", types.NewList(args[1:]...))
 		var items []types.MalType
