@@ -4,8 +4,8 @@ import (
 	"errors"
 	"log"
 
-	"github.com/dball/mal/glimpse/ex"
-	"github.com/dball/mal/glimpse/types"
+	"github.com/dball/glimpse/ex"
+	"github.com/dball/glimpse/types"
 )
 
 var (

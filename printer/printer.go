@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dball/mal/glimpse/runtime"
-	"github.com/dball/mal/glimpse/types"
+	"github.com/dball/glimpse/runtime"
+	"github.com/dball/glimpse/types"
 )
 
 // Config controls printing behavior

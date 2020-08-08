@@ -7,11 +7,11 @@ import (
 	"os"
 
 	"github.com/benbjohnson/immutable"
-	"github.com/dball/mal/glimpse/core"
-	"github.com/dball/mal/glimpse/printer"
-	"github.com/dball/mal/glimpse/reader"
-	"github.com/dball/mal/glimpse/runtime"
-	"github.com/dball/mal/glimpse/types"
+	"github.com/dball/glimpse/core"
+	"github.com/dball/glimpse/printer"
+	"github.com/dball/glimpse/reader"
+	"github.com/dball/glimpse/runtime"
+	"github.com/dball/glimpse/types"
 )
 
 func evalAst(evalEnv *types.Env, form types.MalType) (types.MalType, error) {

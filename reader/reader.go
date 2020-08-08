@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/dball/mal/glimpse/types"
+	"github.com/dball/glimpse/types"
 )
 
 var tokenRegexp = regexp.MustCompile(`[\s,]*(~@|[\[\]{}()'` + "`" +

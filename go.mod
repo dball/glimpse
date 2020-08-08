@@ -1,4 +1,4 @@
-module github.com/dball/mal/glimpse
+module github.com/dball/glimpse
 
 go 1.14
 

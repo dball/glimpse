@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/benbjohnson/immutable"
-	"github.com/dball/mal/glimpse/printer"
-	"github.com/dball/mal/glimpse/reader"
-	"github.com/dball/mal/glimpse/runtime"
-	"github.com/dball/mal/glimpse/types"
+	"github.com/dball/glimpse/printer"
+	"github.com/dball/glimpse/reader"
+	"github.com/dball/glimpse/runtime"
+	"github.com/dball/glimpse/types"
 )
 
 func intList(items []types.MalType) ([]int64, error) {
