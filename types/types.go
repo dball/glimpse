@@ -612,11 +612,10 @@ func (malnil Nil) Lookup(value MalType) (MalType, bool) {
 }
 
 type Range struct {
-	Lower     int64
-	Upper     int64
-	Step      int64
-	Finite    bool
-	NextValue int64
+	Lower  int64
+	Upper  int64
+	Step   int64
+	Finite bool
 }
 
 func (r Range) Seq() Seq {
@@ -624,11 +623,11 @@ func (r Range) Seq() Seq {
 }
 
 func (r Range) Next() (bool, MalType, Seq) {
-	if r.Finite && r.NextValue >= r.Upper {
+	if r.Finite && r.Lower >= r.Upper {
 		return true, nil, nil
 	}
-	head := Integer(r.NextValue)
-	tail := Range{Lower: r.Lower, Upper: r.Upper, Step: r.Step, Finite: r.Finite, NextValue: r.NextValue + r.Step}
+	head := Integer(r.Lower)
+	tail := Range{Lower: r.Lower + r.Step, Upper: r.Upper, Step: r.Step, Finite: r.Finite}
 	return false, head, tail
 }
 

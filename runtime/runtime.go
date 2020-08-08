@@ -276,9 +276,9 @@ func Range(constraints ...types.MalType) (types.MalType, error) {
 	case 1:
 		return types.Range{Upper: ints[0], Step: 1, Finite: true}, nil
 	case 2:
-		return types.Range{Lower: ints[0], NextValue: ints[0], Upper: ints[1], Step: 1, Finite: true}, nil
+		return types.Range{Lower: ints[0], Upper: ints[1], Step: 1, Finite: true}, nil
 	case 3:
-		return types.Range{Lower: ints[0], NextValue: ints[0], Upper: ints[1], Step: ints[2], Finite: true}, nil
+		return types.Range{Lower: ints[0], Upper: ints[1], Step: ints[2], Finite: true}, nil
 	default:
 		return nil, invalidValue
 	}
