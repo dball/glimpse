@@ -333,10 +333,26 @@ func (s String) Seq() Seq {
 	runes := []rune(s)
 	items := make([]MalType, len(runes))
 	for i, r := range runes {
-		items[i] = r
+		items[i] = Rune(r)
 	}
 	list := NewList(items...)
 	return list.Seq()
+}
+
+// Rune - mal rune values
+type Rune rune
+
+// ValueEquals compares runes
+func (r Rune) ValueEquals(that MalType) bool {
+	thatRune, valid := that.(Rune)
+	if !valid {
+		return false
+	}
+	return r == thatRune
+}
+
+func (r Rune) hashBytes() []byte {
+	return []byte(string(r))
 }
 
 func hashAnyValue(hash *hash.Hash32, value *MalType) {

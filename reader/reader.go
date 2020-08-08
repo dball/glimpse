@@ -223,19 +223,19 @@ func parseString(runes []rune) (types.MalType, error) {
 func parseRune(runes []rune) (types.MalType, error) {
 	switch len(runes) {
 	case 1:
-		return runes[0], nil
+		return types.Rune(runes[0]), nil
 	case 0:
 		return nil, Error{"Invalid rune literal", nil}
 	}
 	switch string(runes) {
 	case "newline":
-		return '\n', nil
+		return types.Rune('\n'), nil
 	case "return":
-		return '\r', nil
+		return types.Rune('\r'), nil
 	case "space":
-		return ' ', nil
+		return types.Rune(' '), nil
 	case "tab":
-		return '\t', nil
+		return types.Rune('\t'), nil
 	}
 	return nil, Error{"Invalid rune literal", nil}
 }
