@@ -30,6 +30,8 @@ func PrintStr(config Config, value types.MalType) string {
 		return printMap(config, v)
 	case types.String:
 		return printString(config, v)
+	case rune:
+		return printRune(config, v)
 	case types.Function:
 		return "#FN"
 	case types.Keyword:
@@ -122,5 +124,27 @@ func printString(config Config, s types.String) string {
 		}
 	}
 	sb.WriteRune('"')
+	return sb.String()
+}
+
+func printRune(config Config, r rune) string {
+	if !config.Readably {
+		var sb strings.Builder
+		sb.WriteRune(r)
+		return sb.String()
+	}
+	switch r {
+	case '\n':
+		return `\newline`
+	case '\r':
+		return `\return`
+	case ' ':
+		return `\space`
+	case '\t':
+		return `\tab`
+	}
+	var sb strings.Builder
+	sb.WriteRune('\\')
+	sb.WriteRune(r)
 	return sb.String()
 }

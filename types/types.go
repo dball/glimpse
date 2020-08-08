@@ -327,6 +327,18 @@ func (s String) hashBytes() []byte {
 	return []byte(s)
 }
 
+// Seq of string is a seq of runes
+func (s String) Seq() Seq {
+	// TODO is this the most efficient cast really?
+	runes := []rune(s)
+	items := make([]MalType, len(runes))
+	for i, r := range runes {
+		items[i] = r
+	}
+	list := NewList(items...)
+	return list.Seq()
+}
+
 func hashAnyValue(hash *hash.Hash32, value *MalType) {
 	switch cast := (*value).(type) {
 	case HasSimpleValueEquality:

@@ -170,6 +170,8 @@ func readAtom(reader *Reader) (types.MalType, error) {
 		return parseString(runes)
 	case ':':
 		return types.NewKeyword(string(runes[1:])), nil
+	case '\\':
+		return parseRune(runes[1:])
 	default:
 		switch token {
 		case "true":
@@ -216,4 +218,24 @@ func parseString(runes []rune) (types.MalType, error) {
 		return nil, Error{"String slashes are unbalanced", nil}
 	}
 	return types.String(string(result)), nil
+}
+
+func parseRune(runes []rune) (types.MalType, error) {
+	switch len(runes) {
+	case 1:
+		return runes[0], nil
+	case 0:
+		return nil, Error{"Invalid rune literal", nil}
+	}
+	switch string(runes) {
+	case "newline":
+		return '\n', nil
+	case "return":
+		return '\r', nil
+	case "space":
+		return ' ', nil
+	case "tab":
+		return '\t', nil
+	}
+	return nil, Error{"Invalid rune literal", nil}
 }
