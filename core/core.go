@@ -694,6 +694,11 @@ func BuildEnv() *types.Env {
 			return types.Boolean(valid && fn.IsMacro), nil
 		},
 	})
+	env.Set("range", types.Function{
+		Fn: func(args ...types.MalType) (types.MalType, error) {
+			return runtime.Range(args...)
+		},
+	})
 
 	/*
 		env.Set(types.Symbol{Name: ""}, types.Function{

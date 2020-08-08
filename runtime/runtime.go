@@ -260,3 +260,26 @@ func Meta(container types.MalType) (types.MalType, error) {
 	}
 	return hm.Metadata(), nil
 }
+
+func Range(constraints ...types.MalType) (types.MalType, error) {
+	ints := make([]int64, len(constraints))
+	for i, constraint := range constraints {
+		in, valid := constraint.(types.Integer)
+		if !valid {
+			return nil, invalidType
+		}
+		ints[i] = int64(in)
+	}
+	switch len(constraints) {
+	case 0:
+		return types.Range{Step: 1}, nil
+	case 1:
+		return types.Range{Upper: ints[0], Step: 1, Finite: true}, nil
+	case 2:
+		return types.Range{Lower: ints[0], NextValue: ints[0], Upper: ints[1], Step: 1, Finite: true}, nil
+	case 3:
+		return types.Range{Lower: ints[0], NextValue: ints[0], Upper: ints[1], Step: ints[2], Finite: true}, nil
+	default:
+		return nil, invalidValue
+	}
+}

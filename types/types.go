@@ -611,6 +611,27 @@ func (malnil Nil) Lookup(value MalType) (MalType, bool) {
 	return nil, false
 }
 
+type Range struct {
+	Lower     int64
+	Upper     int64
+	Step      int64
+	Finite    bool
+	NextValue int64
+}
+
+func (r Range) Seq() Seq {
+	return r
+}
+
+func (r Range) Next() (bool, MalType, Seq) {
+	if r.Finite && r.NextValue >= r.Upper {
+		return true, nil, nil
+	}
+	head := Integer(r.NextValue)
+	tail := Range{Lower: r.Lower, Upper: r.Upper, Step: r.Step, Finite: r.Finite, NextValue: r.NextValue + r.Step}
+	return false, head, tail
+}
+
 // Equals compares values
 func Equals(this MalType, that MalType) bool {
 	switch cast := this.(type) {
