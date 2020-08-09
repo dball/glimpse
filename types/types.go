@@ -157,6 +157,8 @@ func Equals(this MalType, that MalType) bool {
 			thisSeq = thisTail
 			thatSeq = thatTail
 		}
+	case *Atom:
+		return this == that
 	default:
 		return false
 	}
