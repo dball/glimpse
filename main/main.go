@@ -246,7 +246,10 @@ func EVAL(evalEnv *types.Env, form types.MalType) (types.MalType, error) {
 					if err != nil {
 						return nil, err
 					}
-					inner.Set(symbol.Name, val)
+					inner, err = types.DeriveEnv(inner, []types.MalType{symbol}, []types.MalType{val})
+					if err != nil {
+						return nil, err
+					}
 				}
 				evalEnv = inner
 				form = items[2]

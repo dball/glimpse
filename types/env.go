@@ -1,21 +1,25 @@
 package types
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/benbjohnson/immutable"
+)
 
 // Env binds names to values
 type Env struct {
 	Outer    *Env
-	Bindings map[string]MalType
+	Bindings *immutable.Map
 }
 
 // Set sets the value of a symbol
-func (env Env) Set(name string, value MalType) {
-	env.Bindings[name] = value
+func (env *Env) Set(name string, value MalType) {
+	env.Bindings = env.Bindings.Set(name, value)
 }
 
 // Get gets the value of a symbol
-func (env Env) Get(name string) (MalType, error) {
-	value, found := env.Bindings[name]
+func (env *Env) Get(name string) (MalType, error) {
+	value, found := env.Bindings.Get(name)
 	if !found {
 		if env.Outer == nil {
 			return nil, Undefined{Name: name}
@@ -28,12 +32,13 @@ func (env Env) Get(name string) (MalType, error) {
 
 // BuildEnv builds a new env
 func BuildEnv() *Env {
-	return &Env{Bindings: make(map[string]MalType)}
+	return &Env{Bindings: immutable.NewMap(nil)}
 }
 
 // DeriveEnv derives an env
 func DeriveEnv(Outer *Env, binds, exprs []MalType) (*Env, error) {
 	env := BuildEnv()
+	env.Bindings = Outer.Bindings
 	env.Outer = Outer
 	var bindSymbols []Symbol
 	for _, bind := range binds {
