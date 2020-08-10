@@ -15,6 +15,7 @@ func (a *Atom) Set(value MalType) {
 	a.Value = value
 }
 
+// ValueEquals checks pointer equality
 func (a *Atom) ValueEquals(that MalType) bool {
 	thatAtom, valid := that.(*Atom)
 	if !valid {
